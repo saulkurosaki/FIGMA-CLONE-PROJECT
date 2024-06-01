@@ -11,7 +11,7 @@ const Live = () => {
 
   const [{ cursor }, updateMyPresence] = useMyPresence() as any;
 
-  const [cursorState, setCursorState] = useState({
+  const [cursorState, setCursorState] = useState<CursorState>({
     mode: CursorMode.Hidden,
   });
   const [reaction, setReaction] = useState<Reaction[]>([]);
@@ -33,26 +33,32 @@ const Live = () => {
     updateMyPresence({ cursor: null, message: null });
   }, []);
 
-  const handlePointerDown = useCallback((event: React.PointerEvent) => {
-    const x = event.clientX - event.currentTarget.getBoundingClientRect().x;
-    const y = event.clientY - event.currentTarget.getBoundingClientRect().y;
+  const handlePointerDown = useCallback(
+    (event: React.PointerEvent) => {
+      const x = event.clientX - event.currentTarget.getBoundingClientRect().x;
+      const y = event.clientY - event.currentTarget.getBoundingClientRect().y;
 
-    updateMyPresence({ cursor: { x, y } });
+      updateMyPresence({ cursor: { x, y } });
 
-    setCursorState((state: CursorState) =>
-      cursorState.mode === CursorMode.Reaction
-        ? { ...state, isPressed: true }
-        : state
-    );
-  }, []);
+      setCursorState((state: CursorState) =>
+        cursorState.mode === CursorMode.Reaction
+          ? { ...state, isPressed: true }
+          : state
+      );
+    },
+    [cursorState.mode, setCursorState]
+  );
 
-  const handlePointerUp = useCallback((event: React.PointerEvent) => {
-    setCursorState((state: CursorState) =>
-      cursorState.mode === CursorMode.Reaction
-        ? { ...state, isPressed: true }
-        : state
-    );
-  }, []);
+  const handlePointerUp = useCallback(
+    (event: React.PointerEvent) => {
+      setCursorState((state: CursorState) =>
+        cursorState.mode === CursorMode.Reaction
+          ? { ...state, isPressed: true }
+          : state
+      );
+    },
+    [cursorState.mode, setCursorState]
+  );
 
   useEffect(() => {
     const onKeyUp = (e: KeyboardEvent) => {
