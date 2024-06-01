@@ -17,6 +17,12 @@ const Live = () => {
     updateMyPresence({ cursor: { x, y } });
   }, []);
 
+  const handlePointerLeave = useCallback((event: React.PointerEvent) => {
+    event.preventDefault();
+
+    updateMyPresence({ cursor: null, message: null });
+  }, []);
+
   return (
     <div>
       <LiveCursors others={others} />
