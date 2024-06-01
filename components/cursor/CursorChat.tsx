@@ -1,5 +1,6 @@
 import CursorSVG from "@/public/assets/CursorSVG";
 import { CursorChatProps, CursorMode } from "@/types/type";
+import React from "react";
 
 const CursorChat = ({
   cursor,
@@ -7,6 +8,10 @@ const CursorChat = ({
   setCursorState,
   updateMyPresence,
 }: CursorChatProps) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {};
+
   return (
     <div
       className="absolute top-0 left-0"
@@ -25,6 +30,11 @@ const CursorChat = ({
           <input
             className="z-10 w-60 border-none bg-transparent text-white placeholder-blue-300 outline-none"
             autoFocus={true}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            placeholder={cursorState.previousMessage ? "" : "Type a message..."}
+            value={cursorState.message}
+            maxLength={50}
           />
         </div>
       </>
