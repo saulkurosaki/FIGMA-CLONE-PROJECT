@@ -46,6 +46,14 @@ const Live = () => {
     );
   }, []);
 
+  const handlePointerUp = useCallback((event: React.PointerEvent) => {
+    setCursorState((state: CursorState) =>
+      cursorState.mode === CursorMode.Reaction
+        ? { ...state, isPressed: true }
+        : state
+    );
+  }, []);
+
   useEffect(() => {
     const onKeyUp = (e: KeyboardEvent) => {
       if (e.key === "/") {
@@ -84,6 +92,7 @@ const Live = () => {
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
       className="w-full h-[100vh] flex justify-center items-center text-center"
     >
       <h1 className="text-2xl text-white">LiveBlocks Figma Clone</h1>
