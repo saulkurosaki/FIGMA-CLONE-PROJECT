@@ -1,9 +1,14 @@
-import { useMyPresence, useOthers } from "@/liveblocks.config";
+import {
+  useBroadcastEvent,
+  useEventListener,
+  useMyPresence,
+  useOthers,
+} from "@/liveblocks.config";
 
 import LiveCursors from "./cursor/LiveCursors";
 import React, { useCallback, useEffect, useState } from "react";
 import CursorChat from "./cursor/CursorChat";
-import { CursorMode, CursorState, Reaction } from "@/types/type";
+import { CursorMode, CursorState, Reaction, ReactionEvent } from "@/types/type";
 import ReactionSelector from "./reaction/ReactionButton";
 import FlyingReaction from "./reaction/FlyingReaction";
 import useInterval from "@/hooks/useInterval";
@@ -17,6 +22,8 @@ const Live = () => {
     mode: CursorMode.Hidden,
   });
   const [reaction, setReaction] = useState<Reaction[]>([]);
+
+  const broadcast = useBroadcastEvent();
 
   useInterval(() => {
     if (
@@ -33,8 +40,28 @@ const Live = () => {
           },
         ])
       );
+
+      broadcast({
+        x: cursor.x,
+        y: cursor.y,
+        value: cursorState.reaction,
+      });
     }
   }, 100);
+
+  useEventListener((eventData) => {
+    const event = eventData.event as ReactionEvent;
+
+    setReaction((reactions) =>
+      reactions.concat([
+        {
+          point: { x: event.x, y: event.y },
+          value: event.value,
+          timestamp: Date.now(),
+        },
+      ])
+    );
+  });
 
   const handlePointerMove = useCallback((event: React.PointerEvent) => {
     event.preventDefault();
