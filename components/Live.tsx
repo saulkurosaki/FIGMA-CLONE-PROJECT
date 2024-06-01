@@ -6,6 +6,7 @@ import CursorChat from "./cursor/CursorChat";
 import { CursorMode, CursorState, Reaction } from "@/types/type";
 import ReactionSelector from "./reaction/ReactionButton";
 import FlyingReaction from "./reaction/FlyingReaction";
+import useInterval from "@/hooks/useInterval";
 
 const Live = () => {
   const others = useOthers();
@@ -16,6 +17,24 @@ const Live = () => {
     mode: CursorMode.Hidden,
   });
   const [reaction, setReaction] = useState<Reaction[]>([]);
+
+  useInterval(() => {
+    if (
+      cursorState.mode === CursorMode.Reaction &&
+      cursorState.isPressed &&
+      cursor
+    ) {
+      setReaction((reactions) =>
+        reactions.concat([
+          {
+            point: { x: cursor.x, y: cursor.y },
+            value: cursorState.reaction,
+            timestamp: Date.now(),
+          },
+        ])
+      );
+    }
+  }, 100);
 
   const handlePointerMove = useCallback((event: React.PointerEvent) => {
     event.preventDefault();
