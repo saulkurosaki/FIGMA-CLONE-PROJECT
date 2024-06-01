@@ -17,7 +17,19 @@ const CursorChat = ({
     });
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {};
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setCursorState({
+        mode: CursorMode.Chat,
+        previousMessage: cursorState.message,
+        message: "",
+      });
+    } else if (e.key === "Escape") {
+      setCursorState({
+        mode: CursorMode.Hidden,
+      });
+    }
+  };
 
   return (
     <div
