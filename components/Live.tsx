@@ -21,9 +21,15 @@ const Live = () => {
   const [cursorState, setCursorState] = useState<CursorState>({
     mode: CursorMode.Hidden,
   });
-  const [reaction, setReaction] = useState<Reaction[]>([]);
+  const [reactions, setReactions] = useState<Reaction[]>([]);
 
   const broadcast = useBroadcastEvent();
+
+  useInterval(() => {
+    setReactions((reactions) =>
+      reactions.filter((reaction) => reaction.timestamp > Date.now() - 4000)
+    );
+  }, 1000);
 
   useInterval(() => {
     if (
@@ -31,7 +37,8 @@ const Live = () => {
       cursorState.isPressed &&
       cursor
     ) {
-      setReaction((reactions) =>
+      // concat all the reactions created on mouse click
+      setReactions((reactions) =>
         reactions.concat([
           {
             point: { x: cursor.x, y: cursor.y },
@@ -41,6 +48,7 @@ const Live = () => {
         ])
       );
 
+      // Broadcast the reaction to other users
       broadcast({
         x: cursor.x,
         y: cursor.y,
@@ -51,8 +59,7 @@ const Live = () => {
 
   useEventListener((eventData) => {
     const event = eventData.event as ReactionEvent;
-
-    setReaction((reactions) =>
+    setReactions((reactions) =>
       reactions.concat([
         {
           point: { x: event.x, y: event.y },
@@ -119,9 +126,7 @@ const Live = () => {
         updateMyPresence({ message: "" });
         setCursorState({ mode: CursorMode.Hidden });
       } else if (e.key === "e") {
-        setCursorState({
-          mode: CursorMode.ReactionSelector,
-        });
+        setCursorState({ mode: CursorMode.ReactionSelector });
       }
     };
 
@@ -140,7 +145,7 @@ const Live = () => {
     };
   }, [updateMyPresence]);
 
-  const setReactions = useCallback((reaction: string) => {
+  const setReaction = useCallback((reaction: string) => {
     setCursorState({
       mode: CursorMode.Reaction,
       reaction,
@@ -158,7 +163,7 @@ const Live = () => {
     >
       <h1 className="text-2xl text-white">LiveBlocks Figma Clone</h1>
 
-      {reaction.map((r) => (
+      {reactions.map((r) => (
         <FlyingReaction
           key={r.timestamp.toString()}
           x={r.point.x}
@@ -178,7 +183,11 @@ const Live = () => {
       )}
 
       {cursorState.mode === CursorMode.ReactionSelector && (
-        <ReactionSelector setReaction={setReactions} />
+        <ReactionSelector
+          setReaction={(reaction) => {
+            setReaction(reaction);
+          }}
+        />
       )}
 
       <LiveCursors others={others} />
