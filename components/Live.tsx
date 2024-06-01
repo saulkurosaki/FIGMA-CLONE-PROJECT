@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import CursorChat from "./cursor/CursorChat";
 import { CursorMode, CursorState, Reaction } from "@/types/type";
 import ReactionSelector from "./reaction/ReactionButton";
+import FlyingReaction from "./reaction/FlyingReaction";
 
 const Live = () => {
   const others = useOthers();
@@ -110,6 +111,16 @@ const Live = () => {
       className="w-full h-[100vh] flex justify-center items-center text-center"
     >
       <h1 className="text-2xl text-white">LiveBlocks Figma Clone</h1>
+
+      {reaction.map((r) => (
+        <FlyingReaction
+          key={r.timestamp.toString()}
+          x={r.point.x}
+          y={r.point.y}
+          timestamp={r.timestamp}
+          value={r.value}
+        />
+      ))}
 
       {cursor && (
         <CursorChat
