@@ -23,8 +23,22 @@ const Live = () => {
     updateMyPresence({ cursor: null, message: null });
   }, []);
 
+  const handlePointerDown = useCallback((event: React.PointerEvent) => {
+    const x = event.clientX - event.currentTarget.getBoundingClientRect().x;
+    const y = event.clientY - event.currentTarget.getBoundingClientRect().y;
+
+    updateMyPresence({ cursor: { x, y } });
+  }, []);
+
   return (
-    <div>
+    <div
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      onPointerDown={handlePointerDown}
+      className="w-full h-[100vh] flex justify-center items-center text-center"
+    >
+      <h1 className="text-2xl text-white">LiveBlocks Figma Clone</h1>
+
       <LiveCursors others={others} />
     </div>
   );
