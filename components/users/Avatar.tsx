@@ -1,5 +1,15 @@
-const Avatar = () => {
-  return <div>Avatar</div>;
-};
+import React from "react";
+import styles from "./Avatar.module.css";
 
-export default Avatar;
+export function Avatar({ src, name }: { src: string; name: string }) {
+  return (
+    <div className={styles.avatar} data-tooltip={name}>
+      <img
+        src={src}
+        height={IMAGE_SIZE}
+        width={IMAGE_SIZE}
+        className={styles.avatar_picture}
+      />
+    </div>
+  );
+}
