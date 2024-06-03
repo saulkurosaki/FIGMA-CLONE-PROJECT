@@ -10,13 +10,13 @@ const ActiveUsers = () => {
   const hasMoreUsers = users.length > 3;
 
   return (
-    <main className="flex h-screen w-full select-none place-content-center place-items-center">
+    <div className="flex items-center justify-center gap-1">
       <div className="flex pl-3">
         {currentUser && (
           <Avatar name="You" otherStyles="border-[3px] border-primary-green" />
         )}
 
-        {users.slice(0, 3).map(({ connectionId, info }) => {
+        {users.slice(0, 3).map(({ connectionId }) => {
           return (
             <Avatar
               key={connectionId}
@@ -28,7 +28,7 @@ const ActiveUsers = () => {
 
         {hasMoreUsers && <div className={styles.more}>+{users.length - 3}</div>}
       </div>
-    </main>
+    </div>
   );
 };
 
