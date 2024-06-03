@@ -1,6 +1,8 @@
 import { useOthers, useSelf } from "@/liveblocks.config";
 import { Avatar } from "./Avatar";
 
+import styles from "./index.module.css";
+
 const ActiveUsers = () => {
   const users = useOthers();
   const currentUser = useSelf();
