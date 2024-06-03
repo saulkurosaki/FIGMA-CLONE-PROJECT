@@ -12,6 +12,7 @@ import {
   handleCanvasMouseDown,
   handleCanvasMouseMove,
   handleCanvasMouseUp,
+  handleCanvasObjectModified,
   handleResize,
   initializeFabric,
   renderCanvas,
@@ -87,6 +88,13 @@ export default function Page() {
         syncShapeInStorage,
         setActiveElement,
         activeObjectRef,
+      });
+    });
+
+    canvas.on("object:modified", (options) => {
+      handleCanvasObjectModified({
+        options,
+        syncShapeInStorage,
       });
     });
 
