@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   handleCanvasMouseDown,
   handleCanvasMouseMove,
+  handleCanvasMouseUp,
   handleResize,
   initializeFabric,
 } from "@/lib/canvas";
@@ -23,6 +24,7 @@ export default function Page() {
   const isDrawing = useRef(false);
   const shapeRef = useRef<fabric.Object | null>(null);
   const selectedShapeRef = useRef<string | null>(null);
+  const activeObjectRef = useRef<fabric.Object | null>(null);
 
   const [activeElement, setActiveElement] = useState<ActiveElement>({
     name: "",
@@ -72,6 +74,18 @@ export default function Page() {
         shapeRef,
         selectedShapeRef,
         syncShapeInStorage,
+      });
+    });
+
+    canvas.on("mouse:up", (options) => {
+      handleCanvasMouseUp({
+        canvas,
+        isDrawing,
+        shapeRef,
+        selectedShapeRef,
+        syncShapeInStorage,
+        setActiveElement,
+        activeObjectRef,
       });
     });
 
