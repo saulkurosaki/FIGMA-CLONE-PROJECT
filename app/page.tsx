@@ -1,6 +1,6 @@
 "use client";
 
-import fabric from "fabric";
+import { fabric } from "fabric";
 
 import Live from "@/components/Live";
 import { Room } from "./Room";
@@ -13,6 +13,7 @@ import {
   handleCanvasMouseMove,
   handleCanvasMouseUp,
   handleCanvasObjectModified,
+  handleCanvasSelectionCreated,
   handleResize,
   initializeFabric,
   renderCanvas,
@@ -161,8 +162,16 @@ export default function Page() {
       });
     });
 
+    canvas.on("selection:created", (options) => {
+      handleCanvasSelectionCreated({
+        options,
+        isEditingRef,
+        setElementAttributes,
+      });
+    });
+
     window.addEventListener("resize", () => {
-      handleResize({ fabricRef });
+      handleResize({ canvas: fabricRef.current });
     });
 
     window.addEventListener("keydown", (e: any) => {
@@ -178,8 +187,25 @@ export default function Page() {
 
     return () => {
       canvas.dispose();
+
+      window.removeEventListener("resize", () => {
+        handleResize({
+          canvas: null,
+        });
+      });
+
+      window.removeEventListener("keydown", (e) =>
+        handleKeyDown({
+          e,
+          canvas: fabricRef.current,
+          undo,
+          redo,
+          syncShapeInStorage,
+          deleteShapeFromStorage,
+        })
+      );
     };
-  }, []);
+  }, [canvasRef]);
 
   useEffect(() => {
     renderCanvas({
